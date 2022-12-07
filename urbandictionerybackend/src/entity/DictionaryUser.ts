@@ -1,11 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 import { IsNotEmpty, IsOptional, Length, Matches } from 'class-validator'
+import { UrbanTermDefinition } from './UrbanTermDefinition'
 
 @Entity()
 export class DictionaryUser {
   @PrimaryGeneratedColumn()
   @IsOptional()
     id: number
+
+  @OneToMany(() => UrbanTermDefinition, (def) => def.user, { onDelete: 'CASCADE' })
+    definitions: UrbanTermDefinition[]
 
   @Column({ type: 'varchar', nullable: false })
   @Length(3, 25, { message: 'DisplayName must be from $constraint1 to $constraint2 characters' })

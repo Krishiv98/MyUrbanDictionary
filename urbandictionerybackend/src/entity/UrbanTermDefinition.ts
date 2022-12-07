@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
-import { IsNotEmpty, IsOptional, Length, MaxLength, Min } from 'class-validator'
+import { IsNotEmpty, IsOptional, MaxLength, Min } from 'class-validator'
 import { DictionaryUser } from './DictionaryUser'
 import { UrbanTerm } from './UrbanTerm'
 
@@ -9,26 +9,26 @@ export class UrbanTermDefinition {
   @IsOptional()
     id: number
 
-  @ManyToOne(() => DictionaryUser, (user) => user.id)
+  @ManyToOne(() => DictionaryUser, (user) => user.definitions, { cascade: true })
   @IsNotEmpty({ message: 'A Definition must be created by a User' })
-    UserID: number
+    user: DictionaryUser
 
-  @ManyToOne(() => UrbanTerm, (term) => term.id)
+  @ManyToOne(() => UrbanTerm, (term) => term.definitions, { cascade: true })
   @IsNotEmpty({ message: 'A Definition must be for a term' })
-    UrbanTermID: number
+    urbanterm: UrbanTerm
 
   @Column({ type: 'varchar', nullable: false })
   @MaxLength(250, { message: 'Definition must be less than 250 chars' })
   @IsNotEmpty({ message: 'A Definition must have a Definition' })
-    Definition: string
+    definition: string
 
   @Column({ type: 'integer', default: 0 })
   @IsOptional()
   @Min(0, { message: 'Number of likes must not be less than 0' })
-    Likes: number
+    likes: number
 
   @Column({ type: 'integer', default: 0 })
   @IsOptional()
   @Min(0, { message: 'Number of likes must not be less than 0' })
-    Dislikes: number
+    dislikes: number
 }

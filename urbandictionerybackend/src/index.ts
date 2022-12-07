@@ -2,18 +2,35 @@ import * as express from 'express'
 import * as bodyParser from 'body-parser'
 import { Request, Response, NextFunction } from 'express'
 import { AppDataSource } from './data-source'
-import { DictionaryUser } from './entity/DictionaryUser'
-import { DictionaryUserController } from './controller/DictionaryUserController'
 import * as createError from 'http-errors'
 import { RouteDefinition } from './decorator/RouteDefinition'
+import DictionaryUserController from './controller/DictionaryUserController'
+import UrbanTermController from './controller/UrbanTermController'
+import UrbanTermDefinitionController from './controller/UrbanTermDefinitionController'
+import { DictionaryUser } from './entity/DictionaryUser'
+import { UrbanTerm } from './entity/UrbanTerm'
+import { UrbanTermDefinition } from './entity/UrbanTermDefinition'
+import * as cors from 'cors'
+
+const corsOptions = {
+  origin: /localhost\:\d{4,5}$/i, // localhost any 4 digit port
+  credentials: true, // needed to set and return cookies
+  allowedHeaders: 'Origin,X-Requested-With,Content-Type,Accept,Authorization',
+  methods: 'GET,PUT,POST,DELETE',
+  maxAge: 43200 // 12 hours
+}
 
 AppDataSource.initialize().then(async () => {
   // create express app
   const app = express()
   app.use(bodyParser.json())
 
+  app.use(cors(corsOptions))
+
+  app.options('*', cors(corsOptions))
+
   // register express routes from defined application routes
-  const controllers: any[] = [DictionaryUserController]
+  const controllers: any[] = [DictionaryUserController, UrbanTermController, UrbanTermDefinitionController]
   // Iterate over all our controllers and register our routes
   controllers.forEach((controller) => {
     // This is our instantiated class
@@ -46,30 +63,36 @@ AppDataSource.initialize().then(async () => {
   })
 
   // error handler
-  app.use(function (err, req, res, next) {
-    res.status(err.status || 500)
-    res.json({ status: err.status, message: err.message, stack: err.stack.split(/\s{4,}/) })
+  app.use(function (err, req, response, next) {
+    response.status = err.status || 500
+    response.json({ status: err.status, message: err.message, stack: err.stack.split(/\s{4,}/) })
   })
 
   // start express server
   app.listen(3008)
 
   // insert new users for test
-  // await AppDataSource.manager.save(
-  //   AppDataSource.manager.create(DictionaryUser, {
-  //     firstName: 'Timber',
-  //     lastName: 'Saw',
-  //     age: 27
-  //   })
-  // )
-  //
-  // await AppDataSource.manager.save(
-  //   AppDataSource.manager.create(DictionaryUser, {
-  //     firstName: 'Phantom',
-  //     lastName: 'Assassin',
-  //     age: 24
-  //   })
-  // )
+  await AppDataSource.manager.save(
+    AppDataSource.manager.create(DictionaryUser, {
+      DisplayName: 'HaxSaw',
+      UserName: 'HackSaws',
+      Password: 'HackSams83'
+    })
+  )
+
+  await AppDataSource.manager.save(
+    AppDataSource.manager.create(UrbanTerm, {
+      UrbanTerm: 'Phantom'
+    })
+  )
+
+  await AppDataSource.manager.save(
+    AppDataSource.manager.create(UrbanTermDefinition, {
+      user: await AppDataSource.manager.findOneBy(DictionaryUser, { id: 1 }),
+      urbanterm: await AppDataSource.manager.findOneBy(UrbanTerm, { id: 1 }),
+      definition: 'Another word for ghost'
+    })
+  )
 
   console.log('Express server has started on port 3008. Open http://localhost:3008/ to see results')
 }).catch(error => console.log(error))

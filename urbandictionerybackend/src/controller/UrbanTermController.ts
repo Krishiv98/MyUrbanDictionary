@@ -1,16 +1,16 @@
 import { AppDataSource } from '../data-source'
-import { NextFunction, Request, Response } from 'express'
+import { NextFunction, Request, response } from 'express'
 import { UrbanTerm } from '../entity/UrbanTerm'
 import { Controller } from '../decorator/Controller'
 import { Route } from '../decorator/Route'
-import { validate, ValidationError, ValidatorOptions } from 'class-validator'
+import { validate, ValidatorOptions } from 'class-validator'
 import { Like } from 'typeorm'
 import { UrbanTermDefinition } from '../entity/UrbanTermDefinition'
 
-@Controller('/Users')
+@Controller('/term')
 export default class UrbanTermController {
-  private readonly termRepo = AppDataSource.getRepository(UrbanTerm) // Student Repository
-  private readonly defRepo = AppDataSource.getRepository(UrbanTermDefinition) // Student Repository
+  private readonly termRepo = AppDataSource.getRepository(UrbanTerm) // Term Repository
+  private readonly defRepo = AppDataSource.getRepository(UrbanTermDefinition) // Definition Repository
 
   // https://github.com/typestack/class-validator#passing-options
   private readonly validOptions: ValidatorOptions = {
@@ -23,9 +23,12 @@ export default class UrbanTermController {
   }
 
   @Route('get', '/:id*?')
-  async read (req: Request, res: Response, next: NextFunction): Promise<UrbanTerm | UrbanTerm[]> {
-    if (req.params.id) return await this.termRepo.findOneBy({ id: req.params.id })
-    else {
+  async read (req: Request, res: response, next: NextFunction): Promise<UrbanTerm | UrbanTerm[]> {
+    if (req.params.id) {
+      return await this.termRepo.findOne({
+        relations: { definitions: true }, where: { id: req.params.id }
+      })
+    } else {
       const findOptions: any = { order: {} } // prepare order and where props
       const existingFields = this.termRepo.metadata.ownColumns.map((col) => col.propertyName)
       console.log(req.query)
@@ -43,28 +46,29 @@ export default class UrbanTermController {
   }
 
   @Route('delete', '/:id')
-  async delete (req: Request, res: Response, next: NextFunction): Promise<UrbanTerm> {
-    const termToRemove = await this.termRepo.findOneBy({ id: req.params.id })
+  async delete (req: Request, res: response, next: NextFunction): Promise<UrbanTerm> {
+    const termToRemove = await this.termRepo.findOne({ relations: { definitions: true }, where: { id: req.params.id } })
     res.status = 204
     if (termToRemove) {
-      const definitionsToRemove = await this.defRepo.findBy({ UrbanTermID: termToRemove.id })
-      for (const def of definitionsToRemove) {
-        await this.defRepo.remove(def)
+      if (termToRemove.definitions) {
+        for (const def of termToRemove.definitions) {
+          await this.defRepo.remove(def)
+        }
       }
       return await this.termRepo.remove(termToRemove)
     } else next()
   }
 
   @Route('post')
-  async save (req: Request, res: Response, next: NextFunction): Promise<any> {
+  async save (req: Request, res: response, next: NextFunction): Promise<any> {
     // Extra validation - ensure the id param matached the id submitted in the body
     const newTerm = Object.assign(new UrbanTerm(), req.body)
     const violations = await validate(newTerm, this.validOptions)
     if (violations.length) {
-      res.statusCode = 422 // Unprocessable Entity
+      res.status = 422 // Unprocessable Entity
       return violations
     } else {
-      res.statusCode = 201
+      res.status = 201
       return await this.termRepo.save(newTerm)
     }
   }
