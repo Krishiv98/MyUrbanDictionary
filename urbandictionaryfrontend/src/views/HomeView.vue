@@ -1,21 +1,55 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+
+    <header class="mt-2">
+
+      <section class="py-5 text-center movearea container-fluid" @mousemove="onMousemove"
+               :style="{backgroundColor: `hsl(${x}, 80%, 50%) `}">
+        <div class=" mask row py-lg-5" style="background-color: rgba(0, 0, 0, 0.6);">
+          <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light text-white">Urban Dictionary</h1>
+            <p class="lead text-white">Wondering what does that Urban Term mean?
+              Yes? You have come to the right place</p>
+            <p>
+              <b-button v-b-toggle="'collapse-2'" class="m-1">Search you Urban Word</b-button>
+
+              <b-button href="#" variant="primary">Create Your Urban Term and define it</b-button>
+            </p>
+            <!-- Element to collapse -->
+            <Transition name="bounce">
+              <b-collapse id="collapse-2">
+                <b-card>I am collapsible content!</b-card>
+              </b-collapse>
+            </Transition>
+          </div>
+        </div>
+      </section>
+    </header>
 
     <b-card-group v-for="(item) in trendingUrbanTerms" :key="item.UrbanTermID">
-      <b-card :key="item.UrbanTermID"
-              :header="item.UrbanTerm"
-              header-text-variant="white"
-              header-tag="header"
-              header-bg-variant="dark"
-              :footer="item.UserName"
-              footer-tag="footer"
-              footer-bg-variant="success"
-              footer-border-variant="dark"
-              style="max-width: 100%;"
-      >
-        <b-card-text>{{ item.Definition }}</b-card-text>
+
+      <b-card :key="item.UrbanTermID" style="max-width: 100%; margin: 10px"
+              bg-variant="dark" text-variant="white" :title="item.UrbanTerm" >
+        <b-card-text>
+          {{ item.Definition }}
+        </b-card-text>
+        <b-button href="#" variant="primary">Go somewhere</b-button>
+        <b-card-footer footer-bg-variant="Success" class="mb-4 mt-4">
+
+          <p class="h5 mb-2" >
+            <b-icon icon="person-circle" ></b-icon>
+            {{ item.UserName}}
+          </p>
+
+          <IconButton icon="hand-thumbs-up" animation-style="cylon" variant="secondary"
+                      :animate="false">
+            Like
+          </IconButton>
+          <IconButton icon="hand-thumbs-down" animation-style="cylon" variant="secondary"
+                      :animate="false">
+            Dislike
+          </IconButton>
+        </b-card-footer>
       </b-card>
     </b-card-group>
   </div>
@@ -24,10 +58,12 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import IconButton from '@/components/IconButton.vue';
+import { BIcon } from 'bootstrap-vue';
 
 @Component({
   components: {
-    HelloWorld,
+    HelloWorld, IconButton, BIcon,
   },
 })
 export default class HomeView extends Vue {
@@ -68,7 +104,7 @@ export default class HomeView extends Vue {
 
     },
     {
-      UrbanTermID: 3,
+      UrbanTermID: 4,
       UrbanTerm: 'Term3',
       UrbanTermDefinitionID: 3,
       Definition: 'This is the definition of the Term3',
@@ -78,6 +114,13 @@ export default class HomeView extends Vue {
 
     },
   ]
+
+  // Banner animation
+  x = 0;
+
+  onMousemove(e:any) {
+    this.x = e.clientX;
+  }
 
   // eslint-disable-next-line class-methods-use-this,@typescript-eslint/no-empty-function
   getAllUrbanTerms() {
@@ -106,3 +149,28 @@ export default class HomeView extends Vue {
   // }
 }
 </script>
+<style>
+.movearea {
+  transition: 0.3s background-color ease;
+}
+
+/*Search bar animation CSS*/
+.bounce-enter-active {
+  animation: bounce-in 0.5s;
+}
+.bounce-leave-active {
+  animation: bounce-in 0.5s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+</style>

@@ -1,12 +1,24 @@
 <template>
   <div id="app">
-
-    <!-- Add a search bar here-->
     <!--    Add a ProfileButton here -->
+    <header>
+      <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+          <router-link to="/" class="navbar-brand d-flex align-items-center p-2">
+            <b-icon icon="book-half" >
+            </b-icon>
+            <strong>Urban Dictionary</strong>
+          </router-link>
+          <button class="navbar-toggler" type="button">
+            <p class="h3 mb-2" >
+              <b-icon icon="person-circle" ></b-icon>
+            </p>
+          </button>
 
-    <b-nav pills align="center" class="mb-4">
-      <b-nav-item to="/" exact-active-class="active">Home </b-nav-item> |
-    </b-nav>
+        </div>
+      </div>
+    </header>
+
     <router-view class="container-xl"/>
   </div>
 </template>
