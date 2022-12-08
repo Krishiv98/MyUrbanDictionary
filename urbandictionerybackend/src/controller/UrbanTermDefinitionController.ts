@@ -26,8 +26,12 @@ export default class UrbanTermDefinitionController {
 
   @Route('get', '/:id*?')
   async read (req: Request, res: Response, next: NextFunction): Promise<UrbanTermDefinition | UrbanTermDefinition[]> {
-    if (req.params.id) return await this.defRepo.findOneBy({ id: req.params.id })
-    else {
+    if (req.params.id) {
+      return await this.defRepo.findOne({
+        relations: { urbanterm: true, user: true },
+        where: { id: req.params.id }
+      })
+    } else {
       const findOptions: any = { order: {} } // prepare order and where props
       const existingFields = this.defRepo.metadata.ownColumns.map((col) => col.propertyName)
       console.log(req.query)

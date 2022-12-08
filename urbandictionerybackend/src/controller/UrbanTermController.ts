@@ -63,13 +63,16 @@ export default class UrbanTermController {
   async save (req: Request, res: response, next: NextFunction): Promise<any> {
     // Extra validation - ensure the id param matached the id submitted in the body
     const newTerm = Object.assign(new UrbanTerm(), req.body)
-    const violations = await validate(newTerm, this.validOptions)
-    if (violations.length) {
-      res.status = 422 // Unprocessable Entity
-      return violations
-    } else {
-      res.status = 201
-      return await this.termRepo.save(newTerm)
-    }
+    const termExists = await this.termRepo.findOneBy({ UrbanTerm: newTerm.UrbanTerm })
+    if (!termExists) {
+      const violations = await validate(newTerm, this.validOptions)
+      if (violations.length) {
+        res.status = 422 // Unprocessable Entity
+        return violations
+      } else {
+        res.status = 201
+        return await this.termRepo.save(newTerm)
+      }
+    } else next()
   }
 }
