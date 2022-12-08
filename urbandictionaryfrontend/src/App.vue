@@ -18,11 +18,11 @@
         </div>
       </div>
     </header>
-    <div>
-      <router-view class="container-xl" v-b-scrollspy/>
-      <ParticlesBg type="cobweb" :bg="true" />
-    </div>
+    <div style="position:relative; height: 900px; overflow-y:scroll;">
+      <router-view class="container-xl"/>
 
+    </div>
+    <ParticlesBg type="cobweb" :bg="true" />
   </div>
 </template>
 <script>

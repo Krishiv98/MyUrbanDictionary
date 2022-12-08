@@ -28,7 +28,8 @@
       </section>
     </header>
 
-    <div style="position:relative; height:400px; overflow-y:scroll;">
+    <!--    <div style="position:relative; height:400px; overflow-y:scroll;">-->
+    <div>
       <b-card-group v-b-scrollspy v-for="(item) in trendingUrbanTerms" :key="item.UrbanTermID"
       >
         <b-card :key="item.UrbanTermID" style="max-width: 100%; margin: 10px"
