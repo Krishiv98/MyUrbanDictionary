@@ -18,7 +18,24 @@
         </div>
       </div>
     </header>
+    <div>
+      <router-view class="container-xl" v-b-scrollspy/>
+      <ParticlesBg type="cobweb" :bg="true" />
+    </div>
 
-    <router-view class="container-xl"/>
   </div>
 </template>
+<script>
+
+import { ParticlesBg } from 'particles-bg-vue';
+
+export default {
+  name: 'App',
+  components: {
+    ParticlesBg,
+  },
+};
+</script>
+<style>
+
+</style>

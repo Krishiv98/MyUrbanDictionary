@@ -11,47 +11,52 @@
             <p class="lead text-white">Wondering what does that Urban Term mean?
               Yes? You have come to the right place</p>
             <p>
-              <b-button v-b-toggle="'collapse-2'" class="m-1">Search you Urban Word</b-button>
+              <b-button @click="show = !show" class="m-1">Search you Urban Word</b-button>
 
               <b-button href="#" variant="primary">Create Your Urban Term and define it</b-button>
             </p>
             <!-- Element to collapse -->
+
             <Transition name="bounce">
-              <b-collapse id="collapse-2">
-                <b-card>I am collapsible content!</b-card>
-              </b-collapse>
+              <p v-if="show">
+                <search-bar></search-bar>
+              </p>
             </Transition>
+
           </div>
         </div>
       </section>
     </header>
 
-    <b-card-group v-for="(item) in trendingUrbanTerms" :key="item.UrbanTermID">
+    <div style="position:relative; height:400px; overflow-y:scroll;">
+      <b-card-group v-b-scrollspy v-for="(item) in trendingUrbanTerms" :key="item.UrbanTermID"
+      >
+        <b-card :key="item.UrbanTermID" style="max-width: 100%; margin: 10px"
+                bg-variant="dark" text-variant="white" :title="item.UrbanTerm" >
+          <b-card-text>
+            {{ item.Definition }}
+          </b-card-text>
+          <b-button href="#" variant="primary">Go somewhere</b-button>
+          <b-card-footer footer-bg-variant="Success" class="mb-4 mt-4">
 
-      <b-card :key="item.UrbanTermID" style="max-width: 100%; margin: 10px"
-              bg-variant="dark" text-variant="white" :title="item.UrbanTerm" >
-        <b-card-text>
-          {{ item.Definition }}
-        </b-card-text>
-        <b-button href="#" variant="primary">Go somewhere</b-button>
-        <b-card-footer footer-bg-variant="Success" class="mb-4 mt-4">
+            <p class="h5 mb-2" >
+              <b-icon icon="person-circle" ></b-icon>
+              {{ item.UserName}}
+            </p>
 
-          <p class="h5 mb-2" >
-            <b-icon icon="person-circle" ></b-icon>
-            {{ item.UserName}}
-          </p>
-
-          <IconButton icon="hand-thumbs-up" animation-style="cylon" variant="secondary"
-                      :animate="false">
-            Like
-          </IconButton>
-          <IconButton icon="hand-thumbs-down" animation-style="cylon" variant="secondary"
-                      :animate="false">
-            Dislike
-          </IconButton>
-        </b-card-footer>
-      </b-card>
-    </b-card-group>
+            <IconButton icon="hand-thumbs-up" animation-style="cylon" variant="secondary"
+                        :animate="false">
+              Like
+            </IconButton>
+            <IconButton icon="hand-thumbs-down" animation-style="cylon" variant="secondary"
+                        :animate="false">
+              Dislike
+            </IconButton>
+          </b-card-footer>
+        </b-card>
+      </b-card-group>
+    </div>
+    <ParticlesBg type="cobweb" :bg="true" canvas/>
   </div>
 </template>
 
@@ -59,11 +64,13 @@
 import { Component, Vue } from 'vue-property-decorator';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import IconButton from '@/components/IconButton.vue';
-import { BIcon } from 'bootstrap-vue';
+import { BIcon, VBScrollspy } from 'bootstrap-vue';
+import SearchBar from '@/components/SearchBar.vue';
+// import { ParticlesBg } from 'particles-bg-vue';
 
 @Component({
   components: {
-    HelloWorld, IconButton, BIcon,
+    HelloWorld, IconButton, BIcon, SearchBar,
   },
 })
 export default class HomeView extends Vue {
@@ -156,10 +163,10 @@ export default class HomeView extends Vue {
 
 /*Search bar animation CSS*/
 .bounce-enter-active {
-  animation: bounce-in 0.5s;
+  animation: bounce-in 0.2s;
 }
 .bounce-leave-active {
-  animation: bounce-in 0.5s reverse;
+  animation: bounce-in 0.2s reverse;
 }
 @keyframes bounce-in {
   0% {
