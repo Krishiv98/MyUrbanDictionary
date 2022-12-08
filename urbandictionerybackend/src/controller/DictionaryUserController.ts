@@ -22,15 +22,15 @@ export default class DictionaryUserController {
   }
 
   @Route('get', '/:id')
-  async read (req: Request, res: Response, next: NextFunction): Promise<DictionaryUser> {
-    if (req.body && req.body.id === req.params.id) {
+  async read (req: Request, res: Response, next: NextFunction): Promise<any> {
+    if (req.body && req.body.id.toString() === req.params.id) {
       const userToCheck = await this.userRepo.findOne({
         relations: { definitions: true },
         where: { id: req.params.id }
       })
       if (userToCheck) {
         const password = await this.userRepo.findOne({ select: { Password: true }, where: { id: req.params.id } })
-        if (password.Password === req.body.Password) {
+        if (password.Password === req.body.Password.toString()) {
           res.status = 201
           return userToCheck
         } else {
