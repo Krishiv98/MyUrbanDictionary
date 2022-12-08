@@ -1,7 +1,7 @@
 <template>
   <!--    <div style="position:relative; height:400px; overflow-y:scroll;">-->
   <div class="home">
-    <b-button>{{ Defintions }}</b-button>
+    <b-button>{{$route.query.urbanid }}</b-button>
     <b-card-group v-b-scrollspy v-for="(item) of Defintions"
                   :key="item.UrbanTermDefinitionID"
     >
@@ -49,7 +49,24 @@ import { BIcon } from 'bootstrap-vue';
 export default class UrbanTermView extends Mixins(GlobalMixin) {
   @Prop() private urbanTermID!: number;
 
-  Defintions = this.getAllTheDefinitionsByUrbanID(this.urbanTermID);
+  Defintions = [
+    {
+      user: 1,
+      urbanterm: 'Term1',
+      definition: 'Definitions',
+      likes: 30,
+      dislike: 40,
+
+    },
+    {
+      user: 2,
+      urbanterm: 'Term2',
+      definition: 'Definitions2',
+      likes: 300,
+      dislike: 400,
+
+    },
+  ]
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars,class-methods-use-this
   getAllTheDefinitionsByUrbanID(urbantermID:number) {

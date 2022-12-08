@@ -4,12 +4,15 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 const BASE_URL = 'http://localhost:3006';
 const URBAN_TERM_API = `${BASE_URL}/urbanterm`;
+const URBAN_TERM_DEFINITION_API = `${BASE_URL}/defintion`;
 
 @Component
 export default class GlobalMixin extends Vue {
   BASE_URL = BASE_URL
 
   URBAN_TERM_API = URBAN_TERM_API
+
+  URBAN_TERM_DEFINITION_API = URBAN_TERM_DEFINITION_API
 
   // prop so the parent can disable this child component
   @Prop(Boolean) readonly disabled!:boolean
@@ -19,19 +22,16 @@ export default class GlobalMixin extends Vue {
 
   currentUrbanTerm = 0;
 
-  // currentUrbanTermDefintions = [];
-  //
-  // get getDefnitions() {
-  //   return this.currentUrbanTermDefintions;
-  // }
-  //
-  // setCurrentDefinitions(returnedObject:any) {
-  //   this.currentUrbanTermDefintions = returnedObject;
-  // }
+  // eslint-disable-next-line
+  loadTrendingDefinitions() {
 
-  // set currentListOfDefintions(listOfDefintions:any) {
-  //   this.currentUrbanTermDefintions = listOfDefintions;
-  // }
+    // Call get all definition api amd return it
+  }
+
+  // eslint-disable-next-line
+  loadDefinitionsByurbanID(UrbanID:number) {
+    // call the api
+  }
 
   // method to set the busy state and emit the state to the parent
   // will emit when busy and when no longer busy
@@ -39,6 +39,8 @@ export default class GlobalMixin extends Vue {
     this.isBusy = state;
     this.$emit('busy', state);
   }
+
+  get UrbanTerm() { return this.currentUrbanTerm; }
 
   // computed property if component is busy , disable, both or neither
   // the better name would isUnavailable

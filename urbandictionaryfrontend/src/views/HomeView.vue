@@ -3,6 +3,7 @@
 
     <header class="mt-2">
 
+      <!--      Header Animation-->
       <section class="py-5 text-center movearea container-fluid" @mousemove="onMousemove"
                :style="{backgroundColor: `hsla(${x}, 80%, 50%, 50%) `}">
         <div class=" mask row py-lg-5" style="background-color: rgba(0, 0, 0, 0.8);">
@@ -16,8 +17,8 @@
               <b-button href=""
                         variant="primary">Create Your Urban Term and define it</b-button>
             </p>
-            <!-- Element to collapse -->
 
+            <!-- Element to collapse -->
             <Transition name="bounce">
               <p v-if="show">
                 <search-bar></search-bar>
@@ -29,7 +30,7 @@
       </section>
     </header>
 
-    <!--    <div style="position:relative; height:400px; overflow-y:scroll;">-->
+    <!-- This where the trending UrbanTerms will show up-->
     <div>
       <b-card-group v-b-scrollspy v-for="(item) in trendingUrbanTerms" :key="item.UrbanTermID"
       >
@@ -40,7 +41,7 @@
             {{ item.Definition }}
           </b-card-text>
 
-          <router-link :to="{name: 'UrbanTerm', params: {urbanTermID: item.UrbanTermID}}">
+          <router-link :to="`/urbanterm?urbanid=${item.UrbanTermID}`" >
             <b-button @click="handleUrbanTermClick(item)" variant="primary">
               See All  </b-button></router-link>
 
@@ -81,13 +82,9 @@ import GlobalMixin from '@/mixins/global-mixin';
   },
 })
 export default class HomeView extends Mixins(GlobalMixin) {
-  // This method will use Get method and populate a list of
-  // Urban terms array which will be used in the template
-
   // eslint-disable-next-line class-methods-use-this
 
   trendingUrbanTerms= [
-
     {
       UrbanTermID: 1,
       UrbanTerm: 'Term1',
@@ -136,37 +133,6 @@ export default class HomeView extends Mixins(GlobalMixin) {
   onMousemove(e:any) {
     this.x = e.clientX;
   }
-
-  // eslint-disable-next-line class-methods-use-this,@typescript-eslint/no-empty-function
-  getAllUrbanTerms() {
-
-  }
-
-  // getTheTopUrbanTermDefinition(UrbanTermID:number) {
-  //
-  // }
-  //
-  // getUserByDefinitionID(UrbanTermDefinitionID:number) {
-  //
-  // }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,class-methods-use-this
-  handleUrbanTermClick(item: any) {
-    // setting the current Urban term according the button clicked
-
-    this.currentUrbanTerm = item;
-    // this.currentUrbanTermDefintions =
-    // await this.callAPI(this.URBAN_TERM_API, 'Get', item.UrbanTermID);
-    console.log('Inside the click handler');
-  }
-
-  // handleLikeButtonClick(UrbanTerm:Any) {
-  //
-  // }
-  //
-  // handleDisLikeButtonClick(UrbanTerm:Any) {
-  //
-  // }
 }
 </script>
 <style>
