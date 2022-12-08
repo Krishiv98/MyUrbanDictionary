@@ -11,7 +11,11 @@
           </router-link>
           <button class="navbar-toggler" type="button">
             <p class="h3 mb-2" >
-              <b-icon icon="person-circle" ></b-icon>
+
+              <router-link to="/UrbanTerm"
+                           class="navbar-brand d-flex align-items-center p-2">
+                <b-icon icon="person-circle" ></b-icon>
+              </router-link>
             </p>
           </button>
 
@@ -22,7 +26,7 @@
       <router-view class="container-xl"/>
 
     </div>
-    <ParticlesBg type="cobweb" :bg="true" />
+    <ParticlesBg color="#28282B" type="random" num:1000 :bg="true" />
   </div>
 </template>
 <script>

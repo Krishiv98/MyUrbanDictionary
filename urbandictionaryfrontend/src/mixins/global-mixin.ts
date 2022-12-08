@@ -17,6 +17,22 @@ export default class GlobalMixin extends Vue {
   // busy data property to flag the state a busy waiting for the api
   isBusy = false;
 
+  currentUrbanTerm = 0;
+
+  // currentUrbanTermDefintions = [];
+  //
+  // get getDefnitions() {
+  //   return this.currentUrbanTermDefintions;
+  // }
+  //
+  // setCurrentDefinitions(returnedObject:any) {
+  //   this.currentUrbanTermDefintions = returnedObject;
+  // }
+
+  // set currentListOfDefintions(listOfDefintions:any) {
+  //   this.currentUrbanTermDefintions = listOfDefintions;
+  // }
+
   // method to set the busy state and emit the state to the parent
   // will emit when busy and when no longer busy
   setBusy(state:boolean) {

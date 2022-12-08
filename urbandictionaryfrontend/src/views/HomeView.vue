@@ -4,8 +4,8 @@
     <header class="mt-2">
 
       <section class="py-5 text-center movearea container-fluid" @mousemove="onMousemove"
-               :style="{backgroundColor: `hsl(${x}, 80%, 50%) `}">
-        <div class=" mask row py-lg-5" style="background-color: rgba(0, 0, 0, 0.6);">
+               :style="{backgroundColor: `hsla(${x}, 80%, 50%, 50%) `}">
+        <div class=" mask row py-lg-5" style="background-color: rgba(0, 0, 0, 0.8);">
           <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="fw-light text-white">Urban Dictionary</h1>
             <p class="lead text-white">Wondering what does that Urban Term mean?
@@ -13,7 +13,8 @@
             <p>
               <b-button @click="show = !show" class="m-1">Search you Urban Word</b-button>
 
-              <b-button href="#" variant="primary">Create Your Urban Term and define it</b-button>
+              <b-button href=""
+                        variant="primary">Create Your Urban Term and define it</b-button>
             </p>
             <!-- Element to collapse -->
 
@@ -32,12 +33,17 @@
     <div>
       <b-card-group v-b-scrollspy v-for="(item) in trendingUrbanTerms" :key="item.UrbanTermID"
       >
-        <b-card :key="item.UrbanTermID" style="max-width: 100%; margin: 10px"
+        <b-card :key="item.UrbanTermID"
+                style="max-width: 100%; margin: 10px"
                 bg-variant="dark" text-variant="white" :title="item.UrbanTerm" >
           <b-card-text>
             {{ item.Definition }}
           </b-card-text>
-          <b-button href="#" variant="primary">Go somewhere</b-button>
+
+          <router-link :to="{name: 'UrbanTerm', params: {urbanTermID: item.UrbanTermID}}">
+            <b-button @click="handleUrbanTermClick(item)" variant="primary">
+              See All  </b-button></router-link>
+
           <b-card-footer footer-bg-variant="Success" class="mb-4 mt-4">
 
             <p class="h5 mb-2" >
@@ -57,16 +63,16 @@
         </b-card>
       </b-card-group>
     </div>
-    <ParticlesBg type="cobweb" :bg="true" canvas/>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Mixins } from 'vue-property-decorator';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import IconButton from '@/components/IconButton.vue';
-import { BIcon, VBScrollspy } from 'bootstrap-vue';
+import { BIcon } from 'bootstrap-vue';
 import SearchBar from '@/components/SearchBar.vue';
+import GlobalMixin from '@/mixins/global-mixin';
 // import { ParticlesBg } from 'particles-bg-vue';
 
 @Component({
@@ -74,13 +80,14 @@ import SearchBar from '@/components/SearchBar.vue';
     HelloWorld, IconButton, BIcon, SearchBar,
   },
 })
-export default class HomeView extends Vue {
+export default class HomeView extends Mixins(GlobalMixin) {
   // This method will use Get method and populate a list of
   // Urban terms array which will be used in the template
 
   // eslint-disable-next-line class-methods-use-this
 
   trendingUrbanTerms= [
+
     {
       UrbanTermID: 1,
       UrbanTerm: 'Term1',
@@ -144,8 +151,13 @@ export default class HomeView extends Vue {
   // }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function,class-methods-use-this
-  handleUrbanTermClick() {
+  handleUrbanTermClick(item: any) {
+    // setting the current Urban term according the button clicked
 
+    this.currentUrbanTerm = item;
+    // this.currentUrbanTermDefintions =
+    // await this.callAPI(this.URBAN_TERM_API, 'Get', item.UrbanTermID);
+    console.log('Inside the click handler');
   }
 
   // handleLikeButtonClick(UrbanTerm:Any) {
@@ -164,10 +176,10 @@ export default class HomeView extends Vue {
 
 /*Search bar animation CSS*/
 .bounce-enter-active {
-  animation: bounce-in 0.2s;
+  animation: bounce-in 0.1s;
 }
 .bounce-leave-active {
-  animation: bounce-in 0.2s reverse;
+  animation: bounce-in 0.1s reverse;
 }
 @keyframes bounce-in {
   0% {

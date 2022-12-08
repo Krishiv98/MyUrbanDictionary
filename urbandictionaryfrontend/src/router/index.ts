@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
+import UrbanTermView from '../views/UrbanTermView.vue';
 
 Vue.use(VueRouter);
 
@@ -17,7 +18,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'home',
-    component: HomeView,
+    component: () => import('../views/HomeView.vue'),
   },
 
   // This view wil add a new Uban term and a definition to the database
@@ -26,9 +27,9 @@ const routes: Array<RouteConfig> = [
   // API calls -POST
   // components - Urban term, definition
   {
-    path: '/UrbanTermCreationView',
+    path: '/UrbanTermCreation',
     name: 'UrbanTermCreationView',
-    component: HomeView,
+    component: () => import('../views/UrbanTermCreationView.vue'),
   },
 
   // This view will show all the definitions for a urban term, its assosiated user
@@ -37,16 +38,16 @@ const routes: Array<RouteConfig> = [
   // API Calls - Get, Put
 
   {
-    path: '/UrbanTermView',
-    name: 'home',
-    component: HomeView,
+    path: '/UrbanTerm',
+    name: 'UrbanTerm',
+    component: () => import('../views/UrbanTermView.vue'),
   },
 
   /// this view will only call post method to add a new definition and close it self
   {
-    path: '/UrbanDefinitionCreationView',
+    path: '/UrbanDefinitionCreation',
     name: 'home',
-    component: HomeView,
+    component: () => import('../views/UrbanTermDefinitionCreationView.vue'),
   },
 
   /// User related views
