@@ -24,7 +24,7 @@ export default class UrbanTermDefinitionController {
     }
   }
 
-  @Route('get', '/:id*?')
+  @Route('GET', '/:id*?')
   async read (req: Request, res: Response, next: NextFunction): Promise<UrbanTermDefinition | UrbanTermDefinition[]> {
     if (req.params.id) {
       return await this.defRepo.findOne({
@@ -48,7 +48,7 @@ export default class UrbanTermDefinitionController {
     }
   }
 
-  @Route('put', '/:id')
+  @Route('PUT', '/:id')
   async update (req: Request, res: Response, next: NextFunction): Promise<UrbanTermDefinition | ValidationError[]> {
     const defToUpdate = await this.defRepo.preload(req.body)
 
@@ -65,7 +65,7 @@ export default class UrbanTermDefinitionController {
     }
   }
 
-  @Route('delete', '/:id')
+  @Route('DELETE', '/:id')
   async delete (req: Request, res: Response, next: NextFunction): Promise<UrbanTermDefinition> {
     const defToRemove = await this.defRepo.findOne({ relations: { urbanterm: true }, where: { id: req.params.id } })
     res.status = 204
@@ -81,9 +81,9 @@ export default class UrbanTermDefinitionController {
     } else next()
   }
 
-  @Route('post')
+  @Route('POST')
   async save (req: Request, res: Response, next: NextFunction): Promise<any> {
-    // Extra validation - ensure the id param matached the id submitted in the body
+
     const newDef = Object.assign(new UrbanTermDefinition(), req.body)
     const violations = await validate(newDef, this.validOptions)
     if (violations.length) {

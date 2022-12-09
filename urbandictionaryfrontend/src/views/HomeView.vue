@@ -4,7 +4,7 @@
     <header class="mt-2">
 
       <!--      Header Animation-->
-      <section class="py-5 text-center movearea container-fluid" @mousedown="onMousemove"
+      <section class="py-5 text-center movearea container-fluid" @mousemove="onMousemove"
                :style="{backgroundColor: `hsla(${x}, 80%, 50%, 50%) `}">
         <div class=" mask row py-lg-5" style="background-color: rgba(0, 0, 0, 0.8);">
           <div class="col-lg-6 col-md-8 mx-auto">
@@ -13,9 +13,10 @@
               Yes? You have come to the right place</p>
             <p>
               <b-button @click="show = !show" class="m-1">Search you Urban Word</b-button>
-
-              <b-button href=""
-                        variant="primary">Create Your Urban Term and define it</b-button>
+              <router-link :to="`/urbantermcreation`" >
+                <b-button
+                  variant="primary">Create Your Urban Term and define it</b-button>
+              </router-link>
             </p>
 
             <!-- Element to collapse -->
@@ -38,13 +39,24 @@
                 style="max-width: 100%; margin: 10px"
                 bg-variant="dark" text-variant="white" :title="item.UrbanTerm" >
           <b-card-text>
-            {{item.definitions.reduce(function(prev, current) {
-            return (prev.y > current.y) ? prev : current}}
+            <!--            {{findMostTrendingDefinition(item)}}-->
+            <div v-if="item.definitions.length !== 0">
+              <ul v-for="definition in item.definitions
+                .slice(0,1)" :key="definition.id">
+                <li :key="definition.id">
+                  {{definition.definition}}
+                </li>
+              </ul>
+            </div>
+            <div v-else>
+              <li>No definitions yet.</li>
+            </div>
+
           </b-card-text>
 
-          <router-link :to="`/urbanterm?urbanid=${item.UrbanTermID}`" >
-            <b-button @click="handleUrbanTermClick(item)" variant="primary">
-              See All  </b-button></router-link>
+          <router-link :to="`/urbanterm?urbanid=${item.id}`" >
+            <b-button variant="primary">
+              See All Definitions </b-button></router-link>
 
           <b-card-footer footer-bg-variant="Success" class="mb-4 mt-4">
 
@@ -55,7 +67,13 @@
 
             <IconButton icon="hand-thumbs-up" animation-style="cylon" variant="secondary"
                         :animate="false">
-              Like
+              <!--              <ul v-for="definition in item.definitions-->
+              <!--                .slice(0,1)" :key="definition.id">-->
+              <!--                <li :key="definition.id">-->
+              <!--                  {{$props.tempLikes = $props.tempLikes + definition.likes}}-->
+              <!--                </li>-->
+              <!--              </ul>-->
+              Like {{"Hard coded likes"}}
             </IconButton>
             <IconButton icon="hand-thumbs-down" animation-style="cylon" variant="secondary"
                         :animate="false">
@@ -94,6 +112,12 @@ export default class HomeView extends Mixins(GlobalMixin) {
   @Prop()
   trendingUrbanTerms = null;
 
+  @Prop()
+  tempLikes = 0;
+
+  @Prop()
+  tempDislikes = 0;
+
   async mounted() {
     // Use the mapped getter and action.
     this.$props.trendingUrbanTerms = await this.callAPI(this.TermApi());
@@ -101,8 +125,14 @@ export default class HomeView extends Mixins(GlobalMixin) {
 
   // helper method to return the largest value of an array
 
-  findMostTrendingDefinition(item:any) {
-    return item.reduce((prev: { y: number; }, current: { y: number; }) => ((prev.y > current.y) ? prev : current));
+  /**
+   * This method will sort the defintions for a urban term and return the most
+   * deifnitions for each term with the highest amount of likes
+   * @param item
+   */
+  // eslint-disable-next-line
+  findMostTrendingDefinition(item: any) {
+    return 'hardcoded definition';
   }
 
   // Banner animation

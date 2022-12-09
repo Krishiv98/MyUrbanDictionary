@@ -46,7 +46,7 @@ export default class UrbanTermController {
     }
   }
 
-  @Route('delete', '/:id')
+  @Route('DELETE', '/:id')
   async delete (req: Request, res: Response, next: NextFunction): Promise<UrbanTerm> {
     const termToRemove = await this.termRepo.findOne({ relations: { definitions: true }, where: { id: req.params.id } })
     res.status = 204
@@ -60,12 +60,13 @@ export default class UrbanTermController {
     } else next()
   }
 
-  @Route('post')
+  @Route('POST')
   async save (req: Request, res: Response, next: NextFunction): Promise<any> {
     // Extra validation - ensure the id param matached the id submitted in the body
+    //if we had more time we would implement it but right now we have just commented it put
     const newTerm = Object.assign(new UrbanTerm(), req.body)
-    const termExists = await this.termRepo.findOneBy({ UrbanTerm: newTerm.UrbanTerm })
-    if (!termExists) {
+    // const termExists = await this.termRepo.findOneBy({ UrbanTerm: newTerm.UrbanTerm })
+    // if (!termExists) {
       const violations = await validate(newTerm, this.validOptions)
       if (violations.length) {
         res.status = 422 // Unprocessable Entity
@@ -74,6 +75,7 @@ export default class UrbanTermController {
         res.status = 201
         return await this.termRepo.save(newTerm)
       }
-    } else next()
+    // }
+    // else next()
   }
 }

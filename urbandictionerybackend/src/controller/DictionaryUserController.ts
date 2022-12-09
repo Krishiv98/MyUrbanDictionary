@@ -21,7 +21,7 @@ export default class DictionaryUserController {
     }
   }
 
-  @Route('get', '/:id')
+  @Route('GET', '/:id')
   async read (req: Request, res: Response, next: NextFunction): Promise<any> {
     if (req.body && req.body.id.toString() === req.params.id) {
       const userToCheck = await this.userRepo.findOne({
@@ -47,7 +47,7 @@ export default class DictionaryUserController {
     }
   }
 
-  @Route('delete', '/:id')
+  @Route('DELETE', '/:id')
   async delete (req: Request, res: Response, next: NextFunction): Promise<DictionaryUser> {
     const userToRemove = await this.userRepo.findOne({ relations: { definitions: true }, where: { id: req.params.id } })
     res.status = 204
@@ -61,7 +61,7 @@ export default class DictionaryUserController {
     } else next()
   }
 
-  @Route('put', '/:id')
+  @Route('PUT', '/:id')
   async update (req: Request, res: Response, next: NextFunction): Promise<DictionaryUser | ValidationError[]> {
     const userToUpdate = await this.userRepo.preload(req.body)
 
@@ -78,7 +78,7 @@ export default class DictionaryUserController {
     }
   }
 
-  @Route('post')
+  @Route('POST')
   async save (req: Request, res: Response, next: NextFunction): Promise<any> {
     // Extra validation - ensure the id param matached the id submitted in the body
     const newUser = Object.assign(new DictionaryUser(), req.body)

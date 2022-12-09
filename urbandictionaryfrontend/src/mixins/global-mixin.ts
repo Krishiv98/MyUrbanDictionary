@@ -1,6 +1,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-// import { validate, ValidationError } from 'class-validator';
+import { validate, ValidationError } from 'class-validator';
 
 const BASE_URL = 'http://localhost:3008';
 const URBAN_TERM_API = `${BASE_URL}/term`;
@@ -24,13 +24,7 @@ export default class GlobalMixin extends Vue {
   isBusy = false;
 
   currentUrbanTerm = 0;
-  //
-  // async loadUrbanTerms() {
-  //   ReturnedArrayOfUrbanTerms = await this.callAPI(this.TermApi());
-  // }
 
-  // method to set the busy state and emit the state to the parent
-  // will emit when busy and when no longer busy
   setBusy(state:boolean) {
     this.isBusy = state;
     this.$emit('busy', state);
@@ -45,12 +39,10 @@ export default class GlobalMixin extends Vue {
   // eslint-disable-next-line class-methods-use-this
   UserApi() { return USER_API; }
 
-  // computed property if component is busy , disable, both or neither
-  // the better name would isUnavailable
   get isDisabled() { return this.isBusy || this.disabled; }
 
   /**
-   * Our wrapper for the fetch function with proper headers and options
+   *
    * @param url url address to api server path
    * @param method GET,PUT,POST,DELETE
    * @param dataToSend object to send as body raw json in the request
@@ -70,8 +62,6 @@ export default class GlobalMixin extends Vue {
       },
     };
     console.log(url);
-    // sanity checking for developers
-    // ensure that only upper case GET, POST, PUT, DELETE methods are allowed
     // eslint-disable-next-line no-param-reassign
     method = method.toUpperCase();
     if (['POST', 'PUT', 'DELETE'].includes(method)) fetchOptions.method = method;
@@ -88,9 +78,6 @@ export default class GlobalMixin extends Vue {
     // convert the dataToSend JS object into JSON and GET cannot send a BODY
     if (fetchOptions.method !== 'GET') fetchOptions.body = JSON.stringify(dataToSend);
     console.log(fetchOptions);
-    // finally call fetch , but make so that it throws and error when the response status
-    // is not in the 200s (status ok) example (404 throws error, 500 throws error, 204 no error)
-    // mimics  Axios package
     return fetch(url, fetchOptions)
       .then(async (res) => {
         const resInfo:any = { url: res.url, status: res.status, statusText: res.statusText };
@@ -102,5 +89,18 @@ export default class GlobalMixin extends Vue {
         resInfo.data = await res.json();
         throw Object.assign(error, resInfo); // copy all data from resInfo into error
       });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  mapValidationErrorArray(errors:ValidationError[]):any {
+    return Object.fromEntries(errors.map((err) => {
+      const msg = err.constraints ? Object.values(err.constraints)[0] : 'Invalid Value';
+      return [err.property, msg];
+    }));
+  }
+
+  async getErrorMessages(model:any):Promise<any> {
+    const errors:ValidationError[] = await validate(model);
+    return errors.length ? this.mapValidationErrorArray(errors) : {};
   }
 }

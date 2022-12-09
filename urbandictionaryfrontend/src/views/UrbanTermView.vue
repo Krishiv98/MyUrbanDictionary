@@ -1,21 +1,22 @@
 <template>
-  <!--    <div style="position:relative; height:400px; overflow-y:scroll;">-->
-  <div class="home">
-    <b-button>{{$route.query.urbanid }}</b-button>
-    <b-card-group v-b-scrollspy v-for="(item) of Defintions"
-                  :key="item.UrbanTermDefinitionID"
+  <div class="py-5 text-center  container-fluid">
+    <div class=" mask py-lg-5" style="background-color: rgba(0, 0, 0, 0.8);">
+      <h1 class="fw-light text-white">{{$props.trendingUrbanTerms.UrbanTerm }}</h1></div>
+
+    <!--    Definitions for the current Urban terms-->
+    <b-card-group v-b-scrollspy v-for="(item) in $props.definitions"
+                  :key="item.id"
     >
-      <b-card :key="item.UrbanTermDefinitionID" style="max-width: 100%; margin: 10px"
-              bg-variant="dark" text-variant="white" >
+      <b-card :key="item.id" style="max-width: 100%; margin: 10px"
+              bg-variant="dark" text-variant="white" :title="item.definition" >
         <b-card-text>
-          {{ item.Definition }}
         </b-card-text>
         <b-button href="#" variant="primary">Go somewhere</b-button>
         <b-card-footer footer-bg-variant="Success" class="mb-4 mt-4">
 
           <p class="h5 mb-2" >
             <b-icon icon="person-circle" ></b-icon>
-            {{ item.UserName}}
+            'hardcoded user '
           </p>
 
           <IconButton icon="hand-thumbs-up"
@@ -47,37 +48,30 @@ import { BIcon } from 'bootstrap-vue';
   },
 })
 export default class UrbanTermView extends Mixins(GlobalMixin) {
-  @Prop() private urbanTermID!: number;
+  @Prop()
+  definitions = null;
 
-  Defintions = [
-    {
-      user: 1,
-      urbanterm: 'Term1',
-      definition: 'Definitions',
-      likes: 30,
-      dislike: 40,
+  currentUrbanTerm:any = this.$route.query.urbanid ;
 
-    },
-    {
-      user: 2,
-      urbanterm: 'Term2',
-      definition: 'Definitions2',
-      likes: 300,
-      dislike: 400,
+  @Prop()
+  trendingUrbanTerms = null;
 
-    },
-  ]
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars,class-methods-use-this
-  getAllTheDefinitionsByUrbanID(urbantermID:number) {
-    return {
-      Defintion1: {
-        DefinitionID: urbantermID,
-        Definition: 'This is a defintion',
-        UserName: 'User Name',
-        UserID: 1,
-      },
-    };
+  async mounted() {
+    // Use the mapped getter and action.
+    this.$props.trendingUrbanTerms = await this.callAPI(`${this.TermApi()}/${this.$route.query.urbanid}`);
+    this.$props.definitions = await this.$props.trendingUrbanTerms.definitions;
+    console.log(this.$props.trendingUrbanTerms);
+    // console.log(this.$props.definitions);
   }
+  //
+  // loadAllTheDefinitionsByUrbanID() {
+  //   const arrayOfUrbanTerms = this.$props.trendingUrbanTerms;
+  //   const id = this.$route.query.urbanid;
+  //   // eslint-disable-next-line no-param-reassign
+  //   arrayOfUrbanTerms.filter((element:any, value:any, array:any) => element.id === id);
+  //
+  //   console.log(arrayOfUrbanTerms[0].definitions);
+  //   return arrayOfUrbanTerms[0].definitions[0];
+  // }
 }
 </script>
