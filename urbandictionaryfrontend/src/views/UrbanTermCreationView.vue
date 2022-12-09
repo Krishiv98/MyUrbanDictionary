@@ -1,8 +1,8 @@
 <template>
   <div class=" mask py-lg-5" style="background-color: rgba(0, 0, 0, 0.8);">
-    <!-- Urban Term -->
+    <!-- Urban Term and Defintion creation-->
     <h1 class="fw-light text-white">Create your Urban Term</h1>
-    <b-form-group :invalid-feedback="violation.familyName" :state="hasErr.UrbanTerm" class="mb-1" >
+    <b-form-group :invalid-feedback="violation.UrbanTerm" :state="hasErr.UrbanTerm" class="mb-1" >
       <b-input-group>
         <b-form-input :placeholder="dt.Definition" :state="hasErr.Definition" :disabled="isDisabled"
                       v-model="tempUrbanTerm.UrbanTerm" trim @keydown="violation.familyName=null" />
@@ -71,21 +71,25 @@ export default class UrbanTermCreationView extends Mixins(GlobalMixin) {
 
   get hasErr(): any {
     return {
-      UrbanTerm: this.violation.familyName ? false : null,
-      Definition: this.violation.givenName ? false : null,
+      UrbanTerm: this.violation.UrbanTerm ? false : null,
+      Definition: this.violation.Definition ? false : null,
     };
+  }
+
+  get isNew(): boolean {
+    // if studentID is null, 0 , '' then it's a new student not an existing student
+    return !this.UrbanTerm || !this.UrbanTerm.id;
   }
 
   // This method will save the urban term into the database and
   // than save the definition for the data base
   async saveUrbanTerm() {
-    const icon:BIcon = this.$refs.iconSave;
-    this.violation = await this.getErrorMessages(this.tempStudent);
+    this.violation = await this.getErrorMessages(this.tempUrbanTerm);
 
     if (Object.keys(this.violation).length === 0) {
       this.setBusy(true);// tell parent that this component is waiting for the api to respond
 
-      const url = this.STUDENT_API + (this.isNew ? '' : `/${this.tempStudent.id}`);
+      const url = this.URBAN_TERM_API + (this.isNew ? '' : `/${this.tempStudent.id}`);
       const method = this.isNew ? 'post' : 'put';
 
       try {

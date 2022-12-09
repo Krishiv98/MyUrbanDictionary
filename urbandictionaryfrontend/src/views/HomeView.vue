@@ -67,12 +67,6 @@
 
             <IconButton icon="hand-thumbs-up" animation-style="cylon" variant="secondary"
                         :animate="false">
-              <!--              <ul v-for="definition in item.definitions-->
-              <!--                .slice(0,1)" :key="definition.id">-->
-              <!--                <li :key="definition.id">-->
-              <!--                  {{$props.tempLikes = $props.tempLikes + definition.likes}}-->
-              <!--                </li>-->
-              <!--              </ul>-->
               Like {{"Hard coded likes"}}
             </IconButton>
             <IconButton icon="hand-thumbs-down" animation-style="cylon" variant="secondary"
@@ -96,15 +90,10 @@ import { BIcon } from 'bootstrap-vue';
 import SearchBar from '@/components/SearchBar.vue';
 import GlobalMixin from '@/mixins/global-mixin';
 import { onMounted } from 'vue';
-// import { ParticlesBg } from 'particles-bg-vue';
 
 @Component({
   components: {
     HelloWorld, IconButton, BIcon, SearchBar,
-  },
-
-  async created() {
-    // this.$props.trendingUrbanTerms = await this.callAPI(this.TermApi());
   },
 
 })
@@ -118,12 +107,13 @@ export default class HomeView extends Mixins(GlobalMixin) {
   @Prop()
   tempDislikes = 0;
 
+  show = false
+
   async mounted() {
     // Use the mapped getter and action.
     this.$props.trendingUrbanTerms = await this.callAPI(this.TermApi());
+    this.$props.trendingUrbanTerms.reverse();
   }
-
-  // helper method to return the largest value of an array
 
   /**
    * This method will sort the defintions for a urban term and return the most
@@ -132,10 +122,9 @@ export default class HomeView extends Mixins(GlobalMixin) {
    */
   // eslint-disable-next-line
   findMostTrendingDefinition(item: any) {
-    return 'hardcoded definition';
   }
 
-  // Banner animation
+  // Page  Banner animation
   x = 0;
 
   onMousemove(e: any) {
