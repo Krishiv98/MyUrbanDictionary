@@ -38,7 +38,8 @@
                 style="max-width: 100%; margin: 10px"
                 bg-variant="dark" text-variant="white" :title="item.UrbanTerm" >
           <b-card-text>
-            {{ item.definitions.definition}}
+            {{item.definitions.reduce(function(prev, current) {
+            return (prev.y > current.y) ? prev : current}}
           </b-card-text>
 
           <router-link :to="`/urbanterm?urbanid=${item.UrbanTermID}`" >
@@ -96,6 +97,12 @@ export default class HomeView extends Mixins(GlobalMixin) {
   async mounted() {
     // Use the mapped getter and action.
     this.$props.trendingUrbanTerms = await this.callAPI(this.TermApi());
+  }
+
+  // helper method to return the largest value of an array
+
+  findMostTrendingDefinition(item:any) {
+    return item.reduce((prev: { y: number; }, current: { y: number; }) => ((prev.y > current.y) ? prev : current));
   }
 
   // Banner animation
