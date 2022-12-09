@@ -13,11 +13,11 @@ import { UrbanTermDefinition } from './entity/UrbanTermDefinition'
 import * as cors from 'cors'
 
 const corsOptions = {
-  origin: /localhost\:\d{4,5}$/i, // localhost any 4 digit port
+  origin: /localhost:\d{4,5}$/i, // localhost any 4 digit port
   credentials: true, // needed to set and return cookies
   allowedHeaders: 'Origin,X-Requested-With,Content-Type,Accept,Authorization',
   methods: 'GET,PUT,POST,DELETE',
-  maxAge: 43200 // 12 hours
+  maxAge: 43200 // 12 hours,
 }
 
 AppDataSource.initialize().then(async () => {
@@ -26,8 +26,6 @@ AppDataSource.initialize().then(async () => {
   app.use(bodyParser.json())
 
   app.use(cors(corsOptions))
-
-  app.options('*', cors(corsOptions))
 
   // register express routes from defined application routes
   const controllers: any[] = [DictionaryUserController, UrbanTermController, UrbanTermDefinitionController]

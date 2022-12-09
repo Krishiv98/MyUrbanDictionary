@@ -4,7 +4,7 @@
     <header class="mt-2">
 
       <!--      Header Animation-->
-      <section class="py-5 text-center movearea container-fluid" @mousemove="onMousemove"
+      <section class="py-5 text-center movearea container-fluid" @mousedown="onMousemove"
                :style="{backgroundColor: `hsla(${x}, 80%, 50%, 50%) `}">
         <div class=" mask row py-lg-5" style="background-color: rgba(0, 0, 0, 0.8);">
           <div class="col-lg-6 col-md-8 mx-auto">
@@ -32,13 +32,13 @@
 
     <!-- This where the trending UrbanTerms will show up-->
     <div>
-      <b-card-group v-b-scrollspy v-for="(item) in trendingUrbanTerms" :key="item.UrbanTermID"
+      <b-card-group v-b-scrollspy v-for="(item) in trendingUrbanTerms" :key="item.id"
       >
-        <b-card :key="item.UrbanTermID"
+        <b-card :key="item.id"
                 style="max-width: 100%; margin: 10px"
                 bg-variant="dark" text-variant="white" :title="item.UrbanTerm" >
           <b-card-text>
-            {{ item.Definition }}
+            {{ item.definitions.definition}}
           </b-card-text>
 
           <router-link :to="`/urbanterm?urbanid=${item.UrbanTermID}`" >
@@ -68,70 +68,42 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator';
+import {
+  Component, Emit, Mixins, Prop,
+} from 'vue-property-decorator';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import IconButton from '@/components/IconButton.vue';
 import { BIcon } from 'bootstrap-vue';
 import SearchBar from '@/components/SearchBar.vue';
 import GlobalMixin from '@/mixins/global-mixin';
+import { onMounted } from 'vue';
 // import { ParticlesBg } from 'particles-bg-vue';
 
 @Component({
   components: {
     HelloWorld, IconButton, BIcon, SearchBar,
   },
+
+  async created() {
+    // this.$props.trendingUrbanTerms = await this.callAPI(this.TermApi());
+  },
+
 })
 export default class HomeView extends Mixins(GlobalMixin) {
-  // eslint-disable-next-line class-methods-use-this
+  @Prop()
+  trendingUrbanTerms = null;
 
-  trendingUrbanTerms= [
-    {
-      UrbanTermID: 1,
-      UrbanTerm: 'Term1',
-      UrbanTermDefinitionID: 1,
-      Definition: 'This is the definition of the Term1',
-      DefinitionLikes: 30,
-      DefinitionDislikes: 10,
-      UserName: 'User1',
-
-    },
-    {
-      UrbanTermID: 2,
-      UrbanTerm: 'Term1',
-      UrbanTermDefinitionID: 2,
-      Definition: 'This is the definition of the Term2',
-      DefinitionLikes: 30,
-      DefinitionDislikes: 10,
-      UserName: 'User2',
-
-    },
-    {
-      UrbanTermID: 3,
-      UrbanTerm: 'Term3',
-      UrbanTermDefinitionID: 3,
-      Definition: 'This is the definition of the Term3',
-      DefinitionLikes: 30,
-      DefinitionDislikes: 10,
-      UserName: 'User3',
-
-    },
-    {
-      UrbanTermID: 4,
-      UrbanTerm: 'Term3',
-      UrbanTermDefinitionID: 3,
-      Definition: 'This is the definition of the Term3',
-      DefinitionLikes: 30,
-      DefinitionDislikes: 10,
-      UserName: 'User3',
-
-    },
-  ]
+  async mounted() {
+    // Use the mapped getter and action.
+    this.$props.trendingUrbanTerms = await this.callAPI(this.TermApi());
+  }
 
   // Banner animation
   x = 0;
 
-  onMousemove(e:any) {
+  onMousemove(e: any) {
     this.x = e.clientX;
+    console.log(this.trendingUrbanTerms);
   }
 }
 </script>

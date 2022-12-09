@@ -1,5 +1,5 @@
 import { AppDataSource } from '../data-source'
-import { NextFunction, Request, response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { UrbanTerm } from '../entity/UrbanTerm'
 import { Controller } from '../decorator/Controller'
 import { Route } from '../decorator/Route'
@@ -22,8 +22,8 @@ export default class UrbanTermController {
     }
   }
 
-  @Route('get', '/:id*?')
-  async read (req: Request, res: response, next: NextFunction): Promise<UrbanTerm | UrbanTerm[]> {
+  @Route('GET', '/:id*?')
+  async read (req: Request, res: Response, next: NextFunction): Promise<UrbanTerm | UrbanTerm[]> {
     if (req.params.id) {
       return await this.termRepo.findOne({
         relations: { definitions: true }, where: { id: req.params.id }
@@ -31,7 +31,6 @@ export default class UrbanTermController {
     } else {
       const findOptions: any = { order: {} } // prepare order and where props
       const existingFields = this.termRepo.metadata.ownColumns.map((col) => col.propertyName)
-      console.log(req.query)
       if (req.query.search) {
         findOptions.where = []
         for (const existingField of existingFields) {
@@ -40,13 +39,15 @@ export default class UrbanTermController {
       }
       const sortField: string = existingFields.includes(req.query.sortby) ? req.query.sortby : 'id'
       findOptions.order[sortField] = req.query.reverse ? 'DESC' : 'ASC'
+      findOptions.relations = { definitions: true }
       // findOptions looks like{ order {phone: 'ASC'} }
-      return await this.termRepo.find(findOptions)
+      const terms = await this.termRepo.find(findOptions)
+      return res.json(terms)
     }
   }
 
   @Route('delete', '/:id')
-  async delete (req: Request, res: response, next: NextFunction): Promise<UrbanTerm> {
+  async delete (req: Request, res: Response, next: NextFunction): Promise<UrbanTerm> {
     const termToRemove = await this.termRepo.findOne({ relations: { definitions: true }, where: { id: req.params.id } })
     res.status = 204
     if (termToRemove) {
@@ -60,7 +61,7 @@ export default class UrbanTermController {
   }
 
   @Route('post')
-  async save (req: Request, res: response, next: NextFunction): Promise<any> {
+  async save (req: Request, res: Response, next: NextFunction): Promise<any> {
     // Extra validation - ensure the id param matached the id submitted in the body
     const newTerm = Object.assign(new UrbanTerm(), req.body)
     const termExists = await this.termRepo.findOneBy({ UrbanTerm: newTerm.UrbanTerm })

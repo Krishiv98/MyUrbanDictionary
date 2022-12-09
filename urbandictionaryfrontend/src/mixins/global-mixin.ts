@@ -2,17 +2,20 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 // import { validate, ValidationError } from 'class-validator';
 
-const BASE_URL = 'http://localhost:3006';
-const URBAN_TERM_API = `${BASE_URL}/urbanterm`;
-const URBAN_TERM_DEFINITION_API = `${BASE_URL}/defintion`;
+const BASE_URL = 'http://localhost:3008';
+const URBAN_TERM_API = `${BASE_URL}/term`;
+const URBAN_TERM_DEFINITION_API = `${BASE_URL}/definition`;
+const USER_API = `${BASE_URL}/user`;
+
+const ReturnedArrayOfUrbanTerms = [];
 
 @Component
 export default class GlobalMixin extends Vue {
-  BASE_URL = BASE_URL
+  BASE_URL = 'http://localhost:3008';
 
-  URBAN_TERM_API = URBAN_TERM_API
+  URBAN_TERM_API = `${BASE_URL}/term`;
 
-  URBAN_TERM_DEFINITION_API = URBAN_TERM_DEFINITION_API
+  URBAN_TERM_DEFINITION_API = `${BASE_URL}/definition`;
 
   // prop so the parent can disable this child component
   @Prop(Boolean) readonly disabled!:boolean
@@ -21,17 +24,10 @@ export default class GlobalMixin extends Vue {
   isBusy = false;
 
   currentUrbanTerm = 0;
-
-  // eslint-disable-next-line
-  loadTrendingDefinitions() {
-
-    // Call get all definition api amd return it
-  }
-
-  // eslint-disable-next-line
-  loadDefinitionsByurbanID(UrbanID:number) {
-    // call the api
-  }
+  //
+  // async loadUrbanTerms() {
+  //   ReturnedArrayOfUrbanTerms = await this.callAPI(this.TermApi());
+  // }
 
   // method to set the busy state and emit the state to the parent
   // will emit when busy and when no longer busy
@@ -40,7 +36,14 @@ export default class GlobalMixin extends Vue {
     this.$emit('busy', state);
   }
 
-  get UrbanTerm() { return this.currentUrbanTerm; }
+  // eslint-disable-next-line class-methods-use-this
+  TermApi() { return URBAN_TERM_API; }
+
+  // eslint-disable-next-line class-methods-use-this
+  DefinitionApi() { return URBAN_TERM_DEFINITION_API; }
+
+  // eslint-disable-next-line class-methods-use-this
+  UserApi() { return USER_API; }
 
   // computed property if component is busy , disable, both or neither
   // the better name would isUnavailable
@@ -54,7 +57,7 @@ export default class GlobalMixin extends Vue {
    */
   // eslint-disable-next-line class-methods-use-this
   callAPI(url:string, method = 'GET', dataToSend = {}) {
-    // when calling fetch we need to set default options - especially when dealing with CORS
+  // when calling fetch we need to set default options - especially when dealing with CORS
     const fetchOptions:any = {
       method: 'GET',
       credentials: 'include', // allows api to set cookies in the browser
@@ -62,9 +65,11 @@ export default class GlobalMixin extends Vue {
       headers: { // fetch usually sends these headers, but just to be sure
         'X-Requested-With': 'XmlHttpRequest',
         'Content-Type': 'application/json; charset=utf-8',
+        // eslint-disable-next-line
+        'Origin': window.origin,
       },
     };
-
+    console.log(url);
     // sanity checking for developers
     // ensure that only upper case GET, POST, PUT, DELETE methods are allowed
     // eslint-disable-next-line no-param-reassign
@@ -72,23 +77,24 @@ export default class GlobalMixin extends Vue {
     if (['POST', 'PUT', 'DELETE'].includes(method)) fetchOptions.method = method;
 
     if (Object.keys(dataToSend).length) {
-      // convert the dataToSend JS object into JSon and GEt CANNOT SEND A BODY
+    // convert the dataToSend JS object into JSon and GEt CANNOT SEND A BODY
       if (fetchOptions.method !== 'GET') fetchOptions.body = JSON.stringify(dataToSend);
       else {
-        // eslint-disable-next-line no-param-reassign
+      // eslint-disable-next-line no-param-reassign
         url = `${url}/?${new URLSearchParams(dataToSend).toString()}`;
       }
     }
 
     // convert the dataToSend JS object into JSON and GET cannot send a BODY
     if (fetchOptions.method !== 'GET') fetchOptions.body = JSON.stringify(dataToSend);
-
+    console.log(fetchOptions);
     // finally call fetch , but make so that it throws and error when the response status
     // is not in the 200s (status ok) example (404 throws error, 500 throws error, 204 no error)
     // mimics  Axios package
     return fetch(url, fetchOptions)
       .then(async (res) => {
         const resInfo:any = { url: res.url, status: res.status, statusText: res.statusText };
+        console.log(resInfo);
         // handle 204 No Content differently
         if (res.status === 204) return Promise.resolve(resInfo);
         if (res.ok) return res.json();
