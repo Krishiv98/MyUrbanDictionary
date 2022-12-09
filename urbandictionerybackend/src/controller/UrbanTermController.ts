@@ -34,7 +34,7 @@ export default class UrbanTermController {
       if (req.query.search) {
         findOptions.where = []
         for (const existingField of existingFields) {
-          findOptions.where.push({ [existingField]: Like('%' + req.query.searchwherelike + '%') })
+          findOptions.where.push({ [existingField]: Like('%' + req.query.search + '%') })
         }
       }
       const sortField: string = existingFields.includes(req.query.sortby) ? req.query.sortby : 'id'
@@ -63,18 +63,18 @@ export default class UrbanTermController {
   @Route('POST')
   async save (req: Request, res: Response, next: NextFunction): Promise<any> {
     // Extra validation - ensure the id param matached the id submitted in the body
-    //if we had more time we would implement it but right now we have just commented it put
+    // if we had more time we would implement it but right now we have just commented it put
     const newTerm = Object.assign(new UrbanTerm(), req.body)
     // const termExists = await this.termRepo.findOneBy({ UrbanTerm: newTerm.UrbanTerm })
     // if (!termExists) {
-      const violations = await validate(newTerm, this.validOptions)
-      if (violations.length) {
-        res.status = 422 // Unprocessable Entity
-        return violations
-      } else {
-        res.status = 201
-        return await this.termRepo.save(newTerm)
-      }
+    const violations = await validate(newTerm, this.validOptions)
+    if (violations.length) {
+      res.status = 422 // Unprocessable Entity
+      return violations
+    } else {
+      res.status = 201
+      return await this.termRepo.save(newTerm)
+    }
     // }
     // else next()
   }

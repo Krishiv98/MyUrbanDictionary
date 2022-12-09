@@ -38,7 +38,7 @@ export default class UrbanTermDefinitionController {
       if (req.query.search) {
         findOptions.where = []
         for (const existingField of existingFields) {
-          findOptions.where.push({ [existingField]: Like('%' + req.query.searchwherelike + '%') })
+          findOptions.where.push({ [existingField]: Like('%' + req.query.search + '%') })
         }
       }
       const sortField: string = existingFields.includes(req.query.sortby) ? req.query.sortby : 'id'
@@ -51,15 +51,29 @@ export default class UrbanTermDefinitionController {
   @Route('PUT', '/:id')
   async update (req: Request, res: Response, next: NextFunction): Promise<UrbanTermDefinition | ValidationError[]> {
     const defToUpdate = await this.defRepo.preload(req.body)
+    const findTerm = await this.defRepo.findOne(({ relations: { urbanterm: true }, where: { id: req.params.id } }))
 
     // Extra validation - ensure the id param matached the id submitted in the body
     if (!defToUpdate || defToUpdate.id.toString() !== req.params.id) next() // pass the buck until 404 error is sent
     else {
       const violations = await validate(defToUpdate, this.validOptions)
       if (violations.length) {
+        console.log(violations)
         res.status = 422 // Unprocessable Entity
         return violations
       } else {
+        console.log(defToUpdate)
+        const term = await this.termRepo.findOne({
+          relations: { definitions: true },
+          where: { id: findTerm.urbanterm.id }
+        })
+        const user = await this.userRepo.findOne({
+          relations: { definitions: true },
+          where: { id: findTerm.urbanterm.id }
+        })
+        term.definitions[term.definitions.indexOf(req.params.id)] = defToUpdate
+        user.definitions[user.definitions.indexOf(req.params.id)] = defToUpdate
+
         return await this.defRepo.save(defToUpdate)
       }
     }
@@ -83,7 +97,6 @@ export default class UrbanTermDefinitionController {
 
   @Route('POST')
   async save (req: Request, res: Response, next: NextFunction): Promise<any> {
-
     const newDef = Object.assign(new UrbanTermDefinition(), req.body)
     const violations = await validate(newDef, this.validOptions)
     if (violations.length) {
@@ -97,6 +110,9 @@ export default class UrbanTermDefinitionController {
       newDef.urbanterm = term
       term.definitions.push(newDef)
       user.definitions.push(newDef)
+      // term.definitions.sort((a, b) => {
+      //   return a.likes - b.likes
+      // })
       await this.termRepo.save(term)
       await this.userRepo.save(user)
       res.statusCode = 201

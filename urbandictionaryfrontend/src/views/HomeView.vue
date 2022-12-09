@@ -55,23 +55,28 @@
           </b-card-text>
 
           <router-link :to="`/urbanterm?urbanid=${item.id}`" >
-            <b-button variant="primary">
-              See All Definitions </b-button></router-link>
+            <b-button variant="primary" v-if="item.definitions.length !== 0">
+              See All Definitions </b-button>
+            <b-button variant="primary" v-if="item.definitions.length === 0">
+              Create Yours </b-button>
+          </router-link>
 
           <b-card-footer footer-bg-variant="Success" class="mb-4 mt-4">
 
-            <p class="h5 mb-2" >
+            <p class="h5 mb-2" v-if="item.definitions.length !== 0">
               <b-icon icon="person-circle" ></b-icon>
               {{ item.UserName}}
             </p>
 
             <IconButton icon="hand-thumbs-up" animation-style="cylon" variant="secondary"
-                        :animate="false">
-              Like {{"Hard coded likes"}}
+                        :animate="false" @click="like(item.definitions[0])"
+                        v-if="item.definitions.length !== 0">
+              Like {{item.definitions[0].likes}}
             </IconButton>
             <IconButton icon="hand-thumbs-down" animation-style="cylon" variant="secondary"
-                        :animate="false">
-              Dislike
+                        :animate="false" @click="dislike(item.definitions[0])"
+                        v-if="item.definitions.length !== 0">
+              Dislike {{item.definitions[0].dislikes}}
             </IconButton>
           </b-card-footer>
         </b-card>
@@ -109,6 +114,8 @@ export default class HomeView extends Mixins(GlobalMixin) {
 
   show = false
 
+  violation: any = {}
+
   async mounted() {
     // Use the mapped getter and action.
     this.$props.trendingUrbanTerms = await this.callAPI(this.TermApi());
@@ -130,6 +137,60 @@ export default class HomeView extends Mixins(GlobalMixin) {
   onMousemove(e: any) {
     this.x = e.clientX;
     console.log(this.trendingUrbanTerms);
+  }
+
+  async like(definition: any) {
+    // eslint-disable-next-line no-param-reassign,no-plusplus
+    definition.likes++;
+    console.log(definition);
+    this.violation = await this.getErrorMessages(definition);
+    console.log(this.violation);
+
+    if (Object.keys(this.violation).length === 0) {
+      this.setBusy(true);// tell parent that this component is waiting for the api to respond
+      const url = `${this.DefinitionApi()}/${definition.id}`;
+      const method = 'put';
+
+      try {
+        // eslint-disable-next-line max-len
+        const data = await this.callAPI(url, method, definition); // returns a promise object
+        // emit the action that occurred along with the data received from the api server
+        // to be used by the parent to update the b-table of students
+        this.$emit(definition.id === data.id ? 'updated' : 'added', data);
+      } catch (err: any) {
+        // get the violation messages from the api - if the web server responded
+        this.violation = this.mapValidationErrorArray(err.data);
+      } finally {
+        this.setBusy(false);// tell parent that this component is no longer waiting for the api
+      }
+    }
+  }
+
+  async dislike(definition: any) {
+    // eslint-disable-next-line no-param-reassign,no-plusplus
+    definition.dislikes++;
+    console.log(definition);
+    this.violation = await this.getErrorMessages(definition);
+    console.log(this.violation);
+
+    if (Object.keys(this.violation).length === 0) {
+      this.setBusy(true);// tell parent that this component is waiting for the api to respond
+      const url = `${this.DefinitionApi()}/${definition.id}`;
+      const method = 'put';
+
+      try {
+        // eslint-disable-next-line max-len
+        const data = await this.callAPI(url, method, definition); // returns a promise object
+        // emit the action that occurred along with the data received from the api server
+        // to be used by the parent to update the b-table of students
+        this.$emit(definition.id === data.id ? 'updated' : 'added', data);
+      } catch (err: any) {
+        // get the violation messages from the api - if the web server responded
+        this.violation = this.mapValidationErrorArray(err.data);
+      } finally {
+        this.setBusy(false);// tell parent that this component is no longer waiting for the api
+      }
+    }
   }
 }
 </script>

@@ -89,14 +89,15 @@ export default class UrbanTermCreationView extends Mixins(GlobalMixin) {
     if (Object.keys(this.violation).length === 0) {
       this.setBusy(true);// tell parent that this component is waiting for the api to respond
 
-      const url = this.URBAN_TERM_API + (this.isNew ? '' : `/${this.tempStudent.id}`);
+      const url = this.URBAN_TERM_API + (this.isNew ? '' : `/${this.tempUrbanTerm.id}`);
       const method = this.isNew ? 'post' : 'put';
 
       try {
-        const data = await this.callAPI(url, method, this.tempStudent); // returns a promise object
+        // eslint-disable-next-line max-len
+        const data = await this.callAPI(url, method, this.tempUrbanTerm); // returns a promise object
         // emit the action that occurred along with the data received from the api server
         // to be used by the parent to update the b-table of students
-        this.$emit(this.tempStudent.id === data.id ? 'updated' : 'added', data);
+        this.$emit(this.tempUrbanTerm.id === data.id ? 'updated' : 'added', data);
       } catch (err:any) {
         // get the violation messages from the api - if the web server responded
         this.violation = this.mapValidationErrorArray(err.data);
@@ -107,18 +108,19 @@ export default class UrbanTermCreationView extends Mixins(GlobalMixin) {
   }
 
   async saveDefinition() {
-    this.violation = await this.getErrorMessages(this.tempStudent);
+    this.violation = await this.getErrorMessages(this.tempDefinition);
 
     if (Object.keys(this.violation).length === 0) {
       this.setBusy(true);// tell parent that this component is waiting for the api to respond
-      const url = this.STUDENT_API + (this.isNew ? '' : `/${this.tempStudent.id}`);
+      const url = this.DefinitionApi() + (this.isNew ? '' : `/${this.tempDefinition.id}`);
       const method = this.isNew ? 'post' : 'put';
 
       try {
-        const data = await this.callAPI(url, method, this.tempStudent); // returns a promise object
+        // eslint-disable-next-line max-len
+        const data = await this.callAPI(url, method, this.tempDefinition); // returns a promise object
         // emit the action that occurred along with the data received from the api server
         // to be used by the parent to update the b-table of students
-        this.$emit(this.tempStudent.id === data.id ? 'updated' : 'added', data);
+        this.$emit(this.tempDefinition.id === data.id ? 'updated' : 'added', data);
       } catch (err:any) {
         // get the violation messages from the api - if the web server responded
         this.violation = this.mapValidationErrorArray(err.data);

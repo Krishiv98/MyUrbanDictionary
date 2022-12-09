@@ -61,7 +61,7 @@ export default class GlobalMixin extends Vue {
         'Origin': window.origin,
       },
     };
-    console.log(url);
+    console.log(dataToSend);
     // eslint-disable-next-line no-param-reassign
     method = method.toUpperCase();
     if (['POST', 'PUT', 'DELETE'].includes(method)) fetchOptions.method = method;

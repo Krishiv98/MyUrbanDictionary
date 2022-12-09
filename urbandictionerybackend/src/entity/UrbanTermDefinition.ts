@@ -10,11 +10,9 @@ export class UrbanTermDefinition {
     id: number
 
   @ManyToOne(() => DictionaryUser, (user) => user.definitions, { cascade: true })
-  @IsNotEmpty({ message: 'A Definition must be created by a User' })
     user: DictionaryUser
 
   @ManyToOne(() => UrbanTerm, (term) => term.definitions, { cascade: true })
-  @IsNotEmpty({ message: 'A Definition must be for a term' })
     urbanterm: UrbanTerm
 
   @Column({ type: 'varchar', nullable: false })

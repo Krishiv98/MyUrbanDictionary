@@ -70,27 +70,27 @@ AppDataSource.initialize().then(async () => {
   app.listen(3008)
 
   // insert new users for test
-  await AppDataSource.manager.save(
-    AppDataSource.manager.create(DictionaryUser, {
-      DisplayName: 'HaxSaw',
-      UserName: 'HackSaws',
-      Password: 'HackSams83'
-    })
-  )
-
-  await AppDataSource.manager.save(
-    AppDataSource.manager.create(UrbanTerm, {
-      UrbanTerm: 'Phantom'
-    })
-  )
-
-  await AppDataSource.manager.save(
-    AppDataSource.manager.create(UrbanTermDefinition, {
-      user: await AppDataSource.manager.findOneBy(DictionaryUser, { id: 1 }),
-      urbanterm: await AppDataSource.manager.findOneBy(UrbanTerm, { id: 1 }),
-      definition: 'Another word for ghost'
-    })
-  )
+  // await AppDataSource.manager.save(
+  //   AppDataSource.manager.create(DictionaryUser, {
+  //     DisplayName: 'HaxSaw',
+  //     UserName: 'HackSaws',
+  //     Password: 'HackSams83'
+  //   })
+  // )
+  //
+  // await AppDataSource.manager.save(
+  //   AppDataSource.manager.create(UrbanTerm, {
+  //     UrbanTerm: 'Phantom'
+  //   })
+  // )
+  //
+  // await AppDataSource.manager.save(
+  //   AppDataSource.manager.create(UrbanTermDefinition, {
+  //     user: await AppDataSource.manager.findOneBy(DictionaryUser, { id: 1 }),
+  //     urbanterm: await AppDataSource.manager.findOneBy(UrbanTerm, { id: 1 }),
+  //     definition: 'Another word for ghost'
+  //   })
+  // )
 
   console.log('Express server has started on port 3008. Open http://localhost:3008/ to see results')
 }).catch(error => console.log(error))
