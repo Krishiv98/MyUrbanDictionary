@@ -9,7 +9,7 @@ export class UrbanTerm {
     id: number
 
   @Column({ type: 'varchar', nullable: false })
-    UrbanTerm: string
+    urbanterm: string
 
   @OneToMany(() => UrbanTermDefinition, (def) => def.urbanterm, { onDelete: 'CASCADE' })
     definitions: UrbanTermDefinition[]
@@ -17,5 +17,5 @@ export class UrbanTerm {
   @Column({ type: 'integer', nullable: false, default: 0 })
   @IsOptional()
   @Min(0, { message: 'Num Definitions must not be less than zero' })
-    NumOfDefinitions: number
+    numofdefinitions: number
 }

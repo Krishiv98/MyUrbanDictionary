@@ -89,7 +89,7 @@ export default class UrbanTermDefinitionController {
         relations: { definitions: true },
         where: { id: defToRemove.urbanterm.id }
       })
-      term.NumOfDefinitions--
+      term.numofdefinitions--
       term.definitions.splice(term.definitions.indexOf(defToRemove), 1)
       return await this.defRepo.remove(defToRemove)
     } else next()
@@ -105,16 +105,16 @@ export default class UrbanTermDefinitionController {
     } else {
       const term = await this.termRepo.findOne({ relations: { definitions: true }, where: { id: newDef.urbanterm } })
       const user = await this.userRepo.findOne({ relations: { definitions: true }, where: { id: newDef.user } })
-      term.NumOfDefinitions++
+      term.numofdefinitions++
       newDef.user = user
       newDef.urbanterm = term
-      console.log(term)
+      console.log(newDef)
       term.definitions.push(newDef)
       user.definitions.push(newDef)
       // term.definitions.sort((a, b) => {
       //   return a.likes - b.likes
       // })
-      console.log(newDef)
+      console.log(term)
       await this.termRepo.save(term)
       await this.userRepo.save(user)
       res.statusCode = 201

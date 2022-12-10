@@ -13,7 +13,7 @@
               <b-form-textarea v-model="definitionToAdd"
                                placeholder="Write your definition here..." />
             </b-input-group>
-            <b-button @click="saveStudent" variant="primary">
+            <b-button @click="createConfirm" variant="primary">
               Create Definiition </b-button>
           </b-form-group>
         </p>
@@ -23,7 +23,7 @@
 
     <!-- Create new definition  -->
     <b-modal title="Create Definition" ok-variant="primery" cancel-variant="primary"
-             v-model="showDefinitionCreation">
+             v-model="showDefinitionCreation" @ok="createDefinition">
       <template #modal-cancel>
         <!-- add a X icon to the cancel button-->
         <b-icon-x-square-fill /> cancel
@@ -110,23 +110,26 @@ export default class UrbanTermView extends Mixins(GlobalMixin) {
 
   violation: any = {} // will store violation messages that we get from the api
 
-  createdSuccesfully() {
+  createConfirm() {
     this.showDefinitionCreation = true;
   }
 
-  async saveStudent() {
+  async createDefinition() {
     this.setBusy(true);// tell parent that this component is waiting for the api to respond
     const dataToSend = {
 
-      user: 'I Am hardcoded',
-      urbanterm: this.$props.trendingUrbanTerms.UrbanTerm,
+      user: 1,
+      urbanterm: this.$props.trendingUrbanTerms.id,
       definition: this.definitionToAdd,
+      term: this.$props.trendingUrbanTerms.urbanterm,
+      displayname: 'HaXSaW',
 
     };
     try {
-      const data = await this.callAPI(`${this.TermApi()}/term`, 'POST', dataToSend); // returns a promise object
+      console.log(dataToSend);
+      const data = await this.callAPI(this.DefinitionApi(), 'POST', dataToSend); // returns a promise object
+      this.$props.trendingUrbanTerms = await this.callAPI(`${this.TermApi()}/${this.$route.query.urbanid}`);
       this.$props.definitions = await this.$props.trendingUrbanTerms.definitions;
-      this.createdSuccesfully();
 
       // eslint-disable-next-line no-empty
     } catch (err: any) {
