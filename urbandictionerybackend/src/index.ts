@@ -27,6 +27,14 @@ AppDataSource.initialize().then(async () => {
 
   app.use(cors(corsOptions))
 
+  app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (req.headers.authorization) {
+      console.log(req.headers.authorization)
+      if (req.headers.authorization.match(/^Bearer.UrbanDictionary$/s)) next()
+      else next(createError(406))
+    } else next(createError(406))
+  })
+
   // register express routes from defined application routes
   const controllers: any[] = [DictionaryUserController, UrbanTermController, UrbanTermDefinitionController]
   // Iterate over all our controllers and register our routes

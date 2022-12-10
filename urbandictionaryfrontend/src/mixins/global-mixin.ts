@@ -57,6 +57,7 @@ export default class GlobalMixin extends Vue {
       headers: { // fetch usually sends these headers, but just to be sure
         'X-Requested-With': 'XmlHttpRequest',
         'Content-Type': 'application/json; charset=utf-8',
+        Authorization: 'Bearer.UrbanDictionary',
         // eslint-disable-next-line
         'Origin': window.origin,
       },
