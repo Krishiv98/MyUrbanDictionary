@@ -27,11 +27,9 @@
       </b-list-group-item>
       <!--         loop through all the found students in the results array and add a list item for each
                 separate each student attribute with bootstrap grid -->
-      <b-list-group-item v-else v-for="student in results" :key="student.id" @click="selected(student)" button>
+      <b-list-group-item v-else v-for="term in results" :key="term.id" @click="selected(term)" button>
         <div class="row">
-          <div class="col-4 col-lg-6">{{student.familyName}}, {{student.givenName}}</div>
-          <div class="col-4 col-lg-6">{{student.address}}</div>
-          <div class="col-4 col-lg-12">{{student.phone}}</div>
+          <div class="col-4 col-lg-6">{{term.urbanterm}}</div>
         </div>
       </b-list-group-item>
     </b-list-group>
@@ -102,7 +100,7 @@ export default class SearchBar extends Mixins(GlobalMixin) {
 
     // tell parent this component is busy waiting for the api to respond
     this.setBusy(true);
-    this.callAPI(this.URBAN_TERM_API, 'get', { _sort: 'familyName', _order: 'asc', q: this.query })
+    this.callAPI(this.URBAN_TERM_API, 'get', { search: newVal, order: 'asc', sortby: 'urbanterm' })
       .then((data) => {
         this.results = data;
       })

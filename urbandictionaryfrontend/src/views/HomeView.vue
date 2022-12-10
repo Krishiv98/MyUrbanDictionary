@@ -22,7 +22,7 @@
             <!-- Element to collapse -->
             <Transition name="bounce">
               <p v-if="show">
-                <search-bar></search-bar>
+                <search-bar @busy="setBusy" @selected="handleSelect"></search-bar>
               </p>
             </Transition>
 
@@ -95,6 +95,7 @@ import { BIcon } from 'bootstrap-vue';
 import SearchBar from '@/components/SearchBar.vue';
 import GlobalMixin from '@/mixins/global-mixin';
 import { onMounted } from 'vue';
+import UrbanTerm from '@/models/UrbanTerm';
 
 @Component({
   components: {
@@ -131,12 +132,16 @@ export default class HomeView extends Mixins(GlobalMixin) {
   findMostTrendingDefinition(item: any) {
   }
 
+  handleSelect(term:UrbanTerm) {
+    this.$router.push(`/urbanterm?urbanid=${term.id}`);
+  }
+
   // Page  Banner animation
   x = 0;
 
   onMousemove(e: any) {
     this.x = e.clientX;
-    console.log(this.trendingUrbanTerms);
+    // console.log(this.trendingUrbanTerms);
   }
 
   async like(definition: any) {

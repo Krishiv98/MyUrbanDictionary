@@ -38,11 +38,15 @@ export default class UrbanTermController {
         }
       }
       const sortField: string = existingFields.includes(req.query.sortby) ? req.query.sortby : 'id'
-      findOptions.order[sortField] = req.query.reverse ? 'DESC' : 'ASC'
+      findOptions.order[sortField] = req.query.order
       findOptions.relations = { definitions: true }
+      console.log(req.query)
+      console.log(findOptions)
+
       // findOptions looks like{ order {phone: 'ASC'} }
       const terms = await this.termRepo.find(findOptions)
-      return res.json(terms)
+      console.log(terms)
+      return terms
     }
   }
 
