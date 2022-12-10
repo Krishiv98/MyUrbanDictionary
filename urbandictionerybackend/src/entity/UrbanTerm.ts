@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm'
-import { IsOptional, Min } from 'class-validator'
+import { IsNotEmpty, IsOptional, Length, Min } from 'class-validator'
 import { UrbanTermDefinition } from './UrbanTermDefinition'
 
 @Entity()

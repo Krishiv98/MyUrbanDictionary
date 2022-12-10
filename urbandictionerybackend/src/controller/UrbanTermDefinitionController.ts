@@ -108,11 +108,13 @@ export default class UrbanTermDefinitionController {
       term.NumOfDefinitions++
       newDef.user = user
       newDef.urbanterm = term
+      console.log(term)
       term.definitions.push(newDef)
       user.definitions.push(newDef)
       // term.definitions.sort((a, b) => {
       //   return a.likes - b.likes
       // })
+      console.log(newDef)
       await this.termRepo.save(term)
       await this.userRepo.save(user)
       res.statusCode = 201

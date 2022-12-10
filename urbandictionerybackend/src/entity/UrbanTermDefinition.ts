@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
-import { IsNotEmpty, IsOptional, MaxLength, Min } from 'class-validator'
+import { IsNotEmpty, IsOptional, Length, MaxLength, Min } from 'class-validator'
 import { DictionaryUser } from './DictionaryUser'
 import { UrbanTerm } from './UrbanTerm'
 
@@ -29,4 +29,12 @@ export class UrbanTermDefinition {
   @IsOptional()
   @Min(0, { message: 'Number of likes must not be less than 0' })
     dislikes: number
+
+  @Column({ type: 'varchar', nullable: false })
+    term: string
+
+  @Column({ type: 'varchar', nullable: false })
+  @Length(3, 25, { message: 'DisplayName must be from $constraint1 to $constraint2 characters' })
+  @IsNotEmpty({ message: 'DisplayName is Required' })
+    displayname: string
 }

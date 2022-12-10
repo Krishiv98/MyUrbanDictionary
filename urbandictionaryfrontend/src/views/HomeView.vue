@@ -65,7 +65,7 @@
 
             <p class="h5 mb-2" v-if="item.definitions.length !== 0">
               <b-icon icon="person-circle" ></b-icon>
-              {{ item.UserName}}
+              {{ item.definitions[0].displayname}}
             </p>
 
             <IconButton icon="hand-thumbs-up" animation-style="cylon" variant="secondary"
