@@ -31,6 +31,7 @@ export class UrbanTermDefinition {
     dislikes: number
 
   @Column({ type: 'varchar', nullable: false })
+  @IsNotEmpty({ message: 'term is Required' })
     term: string
 
   @Column({ type: 'varchar', nullable: false })

@@ -94,16 +94,12 @@ export default class UrbanTermView extends Mixins(GlobalMixin) {
 
   showDefinitionCreation = false;
 
-  @Prop()
-  users = null;
-
   definitionToAdd = '';
 
   async mounted() {
     // Use the mapped getter and action.
     this.$props.trendingUrbanTerms = await this.callAPI(`${this.TermApi()}/${this.$route.query.urbanid}`);
     this.$props.definitions = await this.$props.trendingUrbanTerms.definitions;
-    this.$props.users = await this.callAPI(this.UserApi());
     console.log(this.$props.trendingUrbanTerms);
     console.log(this.$props.definitions);
   }

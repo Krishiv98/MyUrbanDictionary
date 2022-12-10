@@ -9,6 +9,7 @@ export class UrbanTerm {
     id: number
 
   @Column({ type: 'varchar', nullable: false })
+  @IsNotEmpty({ message: 'term is Required' })
     urbanterm: string
 
   @OneToMany(() => UrbanTermDefinition, (def) => def.urbanterm, { onDelete: 'CASCADE' })

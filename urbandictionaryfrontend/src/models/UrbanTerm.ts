@@ -8,7 +8,8 @@ export default class UrbanTerm {
   @IsOptional()
   id!: number
 
-  UrbanTerm!: string
+  @IsNotEmpty({ message: 'term is Required' })
+  urbanterm!: string
 
   definitions!: UrbanTermDefinition[]
 

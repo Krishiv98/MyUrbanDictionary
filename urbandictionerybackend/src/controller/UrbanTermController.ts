@@ -69,17 +69,16 @@ export default class UrbanTermController {
     // Extra validation - ensure the id param matached the id submitted in the body
     // if we had more time we would implement it but right now we have just commented it put
     const newTerm = Object.assign(new UrbanTerm(), req.body)
-    // const termExists = await this.termRepo.findOneBy({ UrbanTerm: newTerm.UrbanTerm })
-    // if (!termExists) {
-    const violations = await validate(newTerm, this.validOptions)
-    if (violations.length) {
-      res.status = 422 // Unprocessable Entity
-      return violations
-    } else {
-      res.status = 201
-      return await this.termRepo.save(newTerm)
-    }
-    // }
-    // else next()
+    const termExists = await this.termRepo.findOneBy({ urbanterm: newTerm.urbanterm })
+    if (!termExists) {
+      const violations = await validate(newTerm, this.validOptions)
+      if (violations.length) {
+        res.status = 422 // Unprocessable Entity
+        return violations
+      } else {
+        res.status = 201
+        return await this.termRepo.save(newTerm)
+      }
+    } else next()
   }
 }
