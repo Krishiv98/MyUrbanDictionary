@@ -37,7 +37,7 @@
       >
         <b-card :key="item.id"
                 style="max-width: 100%; margin: 10px"
-                bg-variant="dark" text-variant="white" :title="item.UrbanTerm" >
+                bg-variant="dark" text-variant="white" :title="item.urbanterm" >
           <b-card-text>
             <!--            {{findMostTrendingDefinition(item)}}-->
             <div v-if="item.definitions.length !== 0">

@@ -2,20 +2,22 @@
   <div class=" mask py-lg-5" style="background-color: rgba(0, 0, 0, 0.8);">
     <!-- Urban Term and Defintion creation-->
     <h1 class="fw-light text-white">Create your Urban Term</h1>
-    <b-form-group :invalid-feedback="violation.UrbanTerm" :state="hasErr.UrbanTerm" class="mb-1" >
-      <b-input-group>
-        <b-form-input :placeholder="dt.Definition" :state="hasErr.Definition" :disabled="isDisabled"
-                      v-model="tempUrbanTerm.UrbanTerm" trim @keydown="violation.familyName=null" />
-      </b-input-group>
-    </b-form-group>
     <b-form-group :invalid-feedback="violation.familyName" :state="hasErr.UrbanTerm" class="mb-1" >
       <b-input-group>
-        <b-form-textarea :placeholder="dt.UrbanTerm"
-                         :state="hasErr.UrbanTerm" :disabled="isDisabled"
-                         v-model="tempUrbanTerm.UrbanTerm"
+        <b-form-input :placeholder="dt.UrbanTerm"
+                      :state="hasErr.UrbanTerm" :disabled="isDisabled"
+                      v-model="tempUrbanTerm.UrbanTerm"
+                      trim @keydown="violation.familyName=null" />
+      </b-input-group>
+    </b-form-group>
+    <b-form-group :invalid-feedback="violation.UrbanTerm" :state="hasErr.UrbanTerm" class="mb-1" >
+      <b-input-group>
+        <b-form-textarea :placeholder="dt.Definition" :state="hasErr.Definition"
+                         :disabled="isDisabled" v-model="tempUrbanTerm.UrbanTerm"
                          trim @keydown="violation.familyName=null" />
       </b-input-group>
     </b-form-group>
+
     <!-- BUTTONS -->
     <b-button-group class="w-100 mb-3">
 
